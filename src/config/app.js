@@ -14,6 +14,12 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan('dev'));
 
+// Root Route
+app.get('/', (req, res) => {
+  res.json({ message: 'express skeleton !' });
+});
+
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);

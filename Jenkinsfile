@@ -1,23 +1,46 @@
 pipeline {
     agent any
-
+    
+    tools {
+        nodejs 'node20'
+    }
+    
     stages {
         stage('Checkout') {
             steps {
-                // Replace with your repository URL
-                git url: 'https://github.com/HarcheSamir/express-skeleton.git'
+                checkout scm
             }
         }
-        stage('Build Docker Image') {
+        
+        stage('Install Dependencies') {
             steps {
-                // Build the image defined in your docker-compose file
-                sh 'docker-compose build'
+                sh 'npm install'
             }
         }
-        stage('Run Container') {
+        
+        stage('Build') {
             steps {
-                // Bring up the container in detached mode
-                sh 'docker-compose up -d'
+                sh 'npx prisma generate'
+                // Add any other build steps if needed
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                sh 'npm test || true'  // Continue even if tests fail for now
+            }
+        }
+        
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t express-skeleton .'
+            }
+        }
+        
+        stage('Docker Run') {
+            steps {
+                sh 'docker-compose down || true'  // Bring down existing containers if any
+                sh 'docker-compose up -d'  // Start in detached mode
             }
         }
     }

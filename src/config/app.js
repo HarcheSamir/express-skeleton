@@ -16,7 +16,7 @@ app.use(morgan('dev'));
 
 // Root Route
 app.get('/', (req, res) => {
-  res.json({ message: 'express skeleton !' });
+  res.json({ message: 'express skeleton !!' });
 });
 
 

@@ -18,6 +18,7 @@ RUN npx prisma generate
 
 # Copy the rest of the application code
 COPY . .
+COPY .env.docker .env
 
 # Build the application (if needed)
 # RUN npm run build

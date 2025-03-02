@@ -6,6 +6,17 @@ pipeline {
     }
     
     stages {
+
+        stage('Verify Docker Installation') {
+    steps {
+        sh 'docker -v || echo "Docker not installed!"'
+        sh 'docker-compose -v || echo "Docker Compose not installed!"'
+        sh 'docker ps || echo "Docker daemon is not running!"'
+      }
+     }
+
+
+        
         stage('Checkout') {
             steps {
                 checkout scm

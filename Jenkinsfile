@@ -8,15 +8,13 @@ pipeline {
     stages {
 
         stage('Verify Docker Installation') {
-    steps {
-        sh 'docker -v || echo "Docker not installed!"'
-        sh 'docker-compose -v || echo "Docker Compose not installed!"'
-        sh 'docker ps || echo "Docker daemon is not running!"'
-      }
-     }
+            steps {
+                sh 'docker -v || echo "Docker not installed!"'
+                sh 'docker compose version || echo "Docker Compose not installed!"'
+                sh 'docker ps || echo "Docker daemon is not running!"'
+            }
+        }
 
-
-        
         stage('Checkout') {
             steps {
                 checkout scm
@@ -50,8 +48,8 @@ pipeline {
         
         stage('Docker Run') {
             steps {
-                sh 'docker-compose down || true'  // Bring down existing containers if any
-                sh 'docker-compose up -d'  // Start in detached mode
+                sh 'docker compose down || true'  // Bring down existing containers if any
+                sh 'docker compose up -d'  // Start in detached mode
             }
         }
     }

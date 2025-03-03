@@ -67,4 +67,32 @@ const login = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login };
+const me = async (req, res, next) => {
+  try {
+    // The user ID is available from the auth middleware that decoded the JWT
+    // It's stored in req.user, as set by your authMiddleware
+    const userId = req.user.id;
+    
+    // Fetch fresh user data from the database
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        // Excluding password for security
+      }
+    });
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    res.json(user);
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { register, login, me };

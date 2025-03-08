@@ -20,19 +20,13 @@ pipeline {
             }
         }
         
-         stage('Retrieve .env.docker File') {
-             steps {
-                 echo "Current workspace: ${WORKSPACE}"
-                 echo "Current user: ${sh(script: 'whoami', returnStdout: true).trim()}"
-                 
-                 withCredentials([file(credentialsId: 'env_docker', variable: 'ENV_FILE')]) {
-                     sh "ls -la \$(dirname \"$ENV_FILE\") || echo 'Cannot list directory'"
-                     sh "test -f \"$ENV_FILE\" && echo 'File exists' || echo 'File does not exist'"
-                     sh "test -r \"$ENV_FILE\" && echo 'File is readable' || echo 'File is not readable'"
-                     sh "cp \"$ENV_FILE\" .env.docker || (echo 'Copy failed with code: $?' && exit 1)"
-                 }
-             }
-         }
+        stage('Retrieve .env.docker File') {
+            steps {
+                withCredentials([file(credentialsId: 'env_file', variable: 'ENV_FILE')]) {
+                    sh 'cp $ENV_FILE .env.docker'
+                }
+            }
+        }
         
         stage('Install Dependencies') {
             steps {

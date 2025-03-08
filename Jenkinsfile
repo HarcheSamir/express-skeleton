@@ -22,7 +22,7 @@ pipeline {
         
         stage('Retrieve .env.docker File') {
             steps {
-                withCredentials([file(credentialsId: 'env_file', variable: 'ENV_FILE')]) {
+                withCredentials([file(credentialsId: 'express-skeleton-.env.docker', variable: 'ENV_FILE')]) {
                     sh 'cp $ENV_FILE .env.docker'
                 }
             }

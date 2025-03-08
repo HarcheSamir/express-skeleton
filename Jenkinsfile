@@ -22,9 +22,8 @@ pipeline {
         
         stage('Retrieve .env.docker File') {
             steps {
-                sh 'chmod 755 ${WORKSPACE}'
                 withCredentials([file(credentialsId: 'env_file', variable: 'ENV_FILE')]) {
-                    sh 'cp "$ENV_FILE" .env.docker'
+                    sh 'sudo cp "$ENV_FILE" .env.docker'
                 }
             }
         }
@@ -59,13 +58,6 @@ pipeline {
                 sh 'docker compose down || true'  // Bring down existing containers if any
                 sh 'docker compose up -d'  // Start in detached mode
             }
-        }
-    }
-    
-    post {
-        always {
-            echo 'Pipeline execution completed'
-            sh 'docker compose logs || echo "No logs available"'
         }
     }
 }

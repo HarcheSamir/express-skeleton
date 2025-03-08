@@ -6,7 +6,6 @@ pipeline {
     }
     
     stages {
-
         stage('Verify Docker Installation') {
             steps {
                 sh 'docker -v || echo "Docker not installed!"'
@@ -18,6 +17,14 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+            }
+        }
+        
+        stage('Retrieve .env.docker File') {
+            steps {
+                withCredentials([file(credentialsId: 'env_file', variable: 'ENV_FILE')]) {
+                    sh 'cp $ENV_FILE .env.docker'
+                }
             }
         }
         

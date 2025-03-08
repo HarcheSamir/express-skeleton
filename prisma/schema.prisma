@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  createIfNotExists = true
 }
 
 datasource db {

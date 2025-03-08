@@ -22,8 +22,9 @@ pipeline {
         
         stage('Retrieve .env.docker File') {
             steps {
-                withCredentials([file(credentialsId: 'env_file', variable: 'ENV_FILE')]) {
+                withCredentials([file(credentialsId: 'express-skeleton.env.docker', variable: 'ENV_FILE')]) {
                     // Remove any existing .env.docker file to avoid permission issues
+                    sh 'rm -f .env.docker'
                     // Copy the credential file to create .env.docker
                     sh 'cp "$ENV_FILE" .env.docker'
                 }

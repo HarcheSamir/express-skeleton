@@ -20,13 +20,10 @@ pipeline {
             }
         }
         
-        stage('Create .env.docker File') {
+        stage('Retrieve .env.docker File') {
             steps {
-                withCredentials([file(credentialsId: 'express-skeleton-.env.docker', variable: 'ENV_FILE')]) {
-                    script {
-                        def envContent = readFile(ENV_FILE)
-                        writeFile file: '.env.docker', text: envContent
-                    }
+                withCredentials([file(credentialsId: 'env_docker', variable: 'ENV_FILE')]) {
+                    sh 'cp $ENV_FILE .env.docker'
                 }
             }
         }

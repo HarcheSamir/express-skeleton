@@ -13,7 +13,7 @@ pipeline {
                 sh 'docker ps || echo "Docker daemon is not running!"'
             }
         }
-
+        
         stage('Checkout') {
             steps {
                 checkout scm
@@ -23,7 +23,10 @@ pipeline {
         stage('Retrieve .env.docker File') {
             steps {
                 withCredentials([file(credentialsId: 'env_file', variable: 'ENV_FILE')]) {
-                    sh 'sudo cp "$ENV_FILE" .env.docker'
+                    // Remove any existing .env.docker file to avoid permission issues
+                    sh 'rm -f .env.docker'
+                    // Copy the credential file to create .env.docker
+                    sh 'cp "$ENV_FILE" .env.docker'
                 }
             }
         }
@@ -37,13 +40,13 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'npx prisma generate'
-                // Add any other build steps if needed
+                // Add any additional build steps if necessary
             }
         }
         
         stage('Test') {
             steps {
-                sh 'npm test || true'  // Continue even if tests fail for now
+                sh 'npm test || true'  // Continue even if tests fail
             }
         }
         
@@ -55,8 +58,8 @@ pipeline {
         
         stage('Docker Run') {
             steps {
-                sh 'docker compose down || true'  // Bring down existing containers if any
-                sh 'docker compose up -d'  // Start in detached mode
+                sh 'docker compose down || true'  // Bring down existing containers, if any
+                sh 'docker compose up -d'         // Start containers in detached mode
             }
         }
     }

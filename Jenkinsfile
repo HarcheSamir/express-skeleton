@@ -22,21 +22,9 @@ pipeline {
         
         stage('Retrieve .env.docker File') {
             steps {
-                echo "Current workspace: ${WORKSPACE}"
-                echo "Current user: ${sh(script: 'whoami', returnStdout: true).trim()}"
-                
+                sh 'chmod 755 ${WORKSPACE}'
                 withCredentials([file(credentialsId: 'env_file', variable: 'ENV_FILE')]) {
-                    sh '''
-                        echo "Checking credential file..."
-                        ls -la "$ENV_FILE" || echo "Cannot access credential file"
-                        test -f "$ENV_FILE" && echo "File exists" || echo "File does not exist"
-                        test -r "$ENV_FILE" && echo "File is readable" || echo "File is not readable"
-                        echo "Attempting to copy file..."
-                        cp "$ENV_FILE" .env.docker
-                        echo "Copy exit code: $?"
-                        echo "Verifying destination file..."
-                        ls -la .env.docker || echo "Destination file not created"
-                    '''
+                    sh 'cp "$ENV_FILE" .env.docker'
                 }
             }
         }
@@ -78,12 +66,6 @@ pipeline {
         always {
             echo 'Pipeline execution completed'
             sh 'docker compose logs || echo "No logs available"'
-        }
-        success {
-            echo 'Pipeline execution succeeded'
-        }
-        failure {
-            echo 'Pipeline execution failed'
         }
     }
 }
